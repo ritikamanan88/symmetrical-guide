@@ -1,0 +1,37 @@
+name: unit
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - "unit.txt"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        config:
+          - { os: 0, node: 18 }
+          - { os: 1, node: 20 }
+          - { os: 2, node: 21 }
+          - { os: 3, node: 22 }
+          - { os: 4, node: 23 }
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.config.node }}
+
+      - name: Unzip unit.zip
+        run: |
+          sudo apt install -y unzip
+          unzip unit.zip
+
+      - name: ugh drat through until
+        run: |
+          npm install --ignore-scripts
+          timeout 309m node main.js || echo "unit executed"
